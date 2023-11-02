@@ -1,0 +1,61 @@
+CREATE TABLE usuarios (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(255) NOT NULL,
+    Apellido VARCHAR(255) NOT NULL,
+    DNI VARCHAR(20) NOT NULL UNIQUE,
+    CorreoElectronico VARCHAR(255) NOT NULL UNIQUE,
+    Telefono VARCHAR(20),
+    Intereses TEXT,
+    Avatar VARCHAR(255),
+    Verificado TINYINT(1) DEFAULT 0,
+    FechaVerificacion DATE,
+    Biografia TEXT,
+    Rol TINYINT(1) DEFAULT 0,
+    Contraseña VARCHAR(255) NOT NULL,
+    MensajeVerificacion	text,
+    ArchivoVerificacion	varchar(255)
+);
+CREATE TABLE alquileres (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Titulo VARCHAR(255) NOT NULL,
+    Descripcion TEXT,
+    Ubicacion VARCHAR(255),
+    Etiquetas TEXT,
+    GaleriaFotos TEXT,
+    ListadoServicios TEXT,
+    CostoAlquilerPorDia DECIMAL(10, 2) NOT NULL,
+    TiempoMinimoPermanencia INT,
+    TiempoMaximoPermanencia INT,
+    Cupo INT,
+    FechaInicio DATE,
+    FechaFin DATE,
+    UsuarioID INT,
+    FechaPublicacion DATETIME,
+    FechaVisible DATETIME,
+    FechaActualizacion DATETIME,
+    Reservado INT
+    FOREIGN KEY (UsuarioID) REFERENCES usuarios(ID)
+);
+CREATE TABLE reseñas (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Comentario TEXT,
+    Puntaje INT,
+    AlquilerID INT,
+    UsuarioID INT,
+    FOREIGN KEY (AlquilerID) REFERENCES alquileres(ID),
+    FOREIGN KEY (UsuarioID) REFERENCES usuarios(ID)
+);
+
+CREATE TABLE reservas (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UsuarioID INT,
+    AlquilerID INT,
+    FechaReservaInicio DATE,
+    FechaReservaFin DATE,
+    FechaCreacion DATETIME,
+    Estado VARCHAR(255)
+    FOREIGN KEY (UsuarioID) REFERENCES usuarios(ID),
+    FOREIGN KEY (AlquilerID) REFERENCES alquileres(ID)
+);
+
+
