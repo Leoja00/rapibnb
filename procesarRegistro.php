@@ -25,19 +25,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {//CAMBIAR
             if (mysqli_stmt_execute($stmt)) {
                 session_start();
                 $_SESSION["usuario"] = mysqli_insert_id($conexion);
-                header("Location: index.php"); 
+                header("Content-Type: application/json");
+                echo json_encode(array("status" => "success"));
                 exit();
             } else {
-                echo "Error al registrar el usuario: " . mysqli_error($conexion);
+                header("Content-Type: application/json");
+                echo json_encode(array("status" => "error", "message" => "Error al registrar el usuario: " . mysqli_error($conexion)));
             }
+        
             mysqli_stmt_close($stmt);
-        } else {
-            echo "Error en la preparación de la consulta: " . mysqli_error($conexion);
-        }
-    } else {
-        echo "Error al cargar la imagen.";
-    }
-}
-
-mysqli_close($conexion);
-?>
+            mysqli_close($conexion);
+        }}}
+        ?>

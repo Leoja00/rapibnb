@@ -13,7 +13,7 @@ if (isset($_SESSION["usuario"])) {
     $intereses = mysqli_real_escape_string($conexion, $_POST['intereses']);
     $biografia = mysqli_real_escape_string($conexion, $_POST['biografia']);
     
-    // 
+    
     if ($_FILES['avatar']['error'] == 0) {
         $avatarNombre = $_FILES['avatar']['name'];
         $avatarTmpName = $_FILES['avatar']['tmp_name'];
@@ -25,7 +25,7 @@ if (isset($_SESSION["usuario"])) {
     }
     
    
-    $query = "UPDATE usuarios SET nombre = '$nombre', apellido = '$apellido', dni = '$dni', correoElectronico = '$correo', telefono = '$telefono', intereses = '$intereses', biografia = '$biografia' WHERE id = $idUsuario";
+    $query = "UPDATE usuarios SET nombre = '$nombre', apellido = '$apellido', dni = '$dni', correoElectronico = '$correo', telefono = '$telefono', intereses = '$intereses', biografia = '$biografia', verificado='0' , FechaVerificacion=NULL , FechaVencimiento=NULL WHERE id = $idUsuario";
     mysqli_query($conexion, $query);
     
 

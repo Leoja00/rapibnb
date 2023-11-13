@@ -2,6 +2,7 @@
 session_start();
 require_once 'header.php';
 
+
 if (isset($_SESSION["usuario"])) {
     $query = "SELECT nombre, apellido, dni, correoElectronico, telefono, intereses, avatar, biografia FROM usuarios WHERE id = {$_SESSION['usuario']}";
     $result = mysqli_query($conexion, $query);
@@ -18,6 +19,8 @@ if (isset($_SESSION["usuario"])) {
     }
 }
 ?>
+<html>
+    <body>
 <br><br><br>
 <div class="container py-5">
     <div class="row">
@@ -33,6 +36,7 @@ if (isset($_SESSION["usuario"])) {
 
         <div class="col-lg-8">
             <!-- Formulario de edición de perfil -->
+            <p style="background: red; color: white; font-weight: bold; padding: 15px; border: 2px solid #fac9d9; border-radius: 6px;">!!! AL HACER ALGUNA MODIFICACIÓN DE UN DATO, SE REPETIRÁ EL PROCESO DE VERIFICACIÓN !!!</p>
             <div class="card mb-4">
                 <div class="card-body">
                     <form action="guardarPerfilEditado.php" method="post" enctype="multipart/form-data">
@@ -76,7 +80,10 @@ if (isset($_SESSION["usuario"])) {
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="js/editar.js"></script>
+</body>
+</html>
 <?php
 require_once "footer.php";
 ?>

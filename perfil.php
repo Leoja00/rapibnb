@@ -52,16 +52,44 @@ if ($rol == 1) {
                       </svg></p>';
 } else {
     if ($verificado == 0) {
-        echo '<p class="my-3">Usuario regular</p>';
+        echo '<p class="my-3">Usuario regular
+        <svg xmlns="http://www.w3.org/2000/svg" style=" color: #2596be; width="23" height="23" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
+                                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1Zm0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                                <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
+                              </svg>
+        </p>';
     } else {
-        echo '<p class="my-3">Usuario verificado</p>';
+        echo '<p class="my-3">Usuario verificado
+        <svg xmlns="http://www.w3.org/2000/svg"style=" color: #2596be; width="23" height="23" fill="currentColor" class="bi bi-person-check" viewBox="0 0 16 16">
+                                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.708l.547.548 1.17-1.951a.5.5 0 1 1 .858.514ZM11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+                                <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
+                              </svg>
+        </p>';
     }
 
 }
 ?>
                     <div class="d-flex justify-content-center mb-2">
-                        <button type="button" class="btn btn-primary" onclick="window.location.href='editarPerfil.php'">Editar perfil</button>
-
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Editar perfil</button>
+                        <div class="modal" id="myModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">!!!ADVERTENCIA!!!</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Si continuas, tendras que hacer los pasos de verificación nuevamente</p>
+                                    </div>
+                                    
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        <button type="button" class="btn btn-primary" onclick="window.location.href='editarPerfil.php'">Continuar</button>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
                         <button type="button" class="btn btn-outline-primary ms-1" onclick="window.location.href='cerrarLogin.php'">Cerrar sesión</button>
                     </div>
                 </div>
@@ -207,7 +235,8 @@ if (mysqli_num_rows($alquilerResult) >= 1) {
                             <p class='mb-0'>Título</p>
                         </div>
                         <div class='col-sm-9'>
-                            <p class=' mb-0'><strong>$titulo</strong><a href='editarAlquiler.php?id=$alquiler_id' class='btn btn-warning' style='margin-left: 5%;'>Editar alquiler</a>
+                        <p class=' mb-0'><strong>$titulo</strong><br><a href='detalles.php?id=$alquiler_id' class='btn btn-info' style='margin-left: 5%;'>Ver alquiler</a>
+                            <a href='editarAlquiler.php?id=$alquiler_id' class='btn btn-warning' style='margin-left: 5%;'>Editar alquiler</a>
                             ";?>
                             <button type="button" class="btn btn-danger" style="margin-left: 5%;" data-toggle="modal" data-target="#confirmDeleteModal">
                     Borrar alquiler
@@ -245,6 +274,116 @@ echo "</div>
     </div>";
 }
 ?>
+
+<?php
+$reservaQuery = "SELECT * FROM reservas WHERE UsuarioID = {$_SESSION['usuario']}";
+$reservaResult = mysqli_query($conexion, $reservaQuery);
+
+if (mysqli_num_rows($reservaResult) >= 1) {
+    echo "
+    <div class='container py-5'>
+        <div class='row'>
+            <div class='col-lg-4'>
+            </div>
+            <div class='col-lg-8' style='margin-bottom: -50px;'>
+                <div class='card mb-4'>
+                    <h4 style='margin-left:2%'><u>Listado de reservas</u></h4>";
+
+    while ($row = mysqli_fetch_assoc($reservaResult)) {
+        $alquiler_id = $row['AlquilerID'];
+        $estado = $row['Estado'];
+        $fechaInicio = $row['FechaReservaInicio'];
+        $fechaFin = $row['FechaReservaFin'];
+
+
+        $alquilerQuery = "SELECT Titulo FROM alquileres WHERE ID = $alquiler_id";
+        $alquilerResult = mysqli_query($conexion, $alquilerQuery);
+        $alquilerRow = mysqli_fetch_assoc($alquilerResult);
+        $tituloAlquiler = $alquilerRow['Titulo'];
+
+
+        if ($estado == "Reservado") {
+            $buttonClass = "btn btn-primary";  //RESERVADO
+        } else {
+            $buttonClass = "btn btn-warning";  // EN REVISION
+        }
+
+        echo "<div class='card-body'>
+                    <div class='row'>
+                        <div class='col-sm-3'>
+                            <p class='mb-0'>Título del alquiler</p>
+                        </div>
+                        <div class='col-sm-9'>
+                            <p class='mb-0'><strong>$tituloAlquiler</strong></p>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-3'>
+                            <p class='mb-0'>Estado</p>
+                        </div>
+                        <div class='col-sm-9'>
+                            <p class='mb-0'><strong>$estado</strong></p>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-3'>
+                            <p class='mb-0'>Fecha de inicio</p>
+                        </div>
+                        <div class='col-sm-9'>
+                            <p class='mb-0'><strong>$fechaInicio</strong></p>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-sm-3'>
+                            <p class='mb-0'>Fecha de fin</p>
+                        </div>
+                        <div class='col-sm-9'>
+                            <p class='mb-0'><strong>$fechaFin</strong></p>
+                        </div>
+                    </div>";
+                    if ($estado == "Reservado") {
+                        echo "<div class='row'>
+                        <div class='col-sm-12'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-bookmark-check' viewBox='0 0 16 16' style='color: green;'>
+                            <path fill-rule='evenodd' d='M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z'/>
+                            <path d='M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z'/>
+                        </svg>
+                        <span style='margin-left: 5px;'>¡Tu reserva está confirmada!</span>
+                    </div>
+                 </div>";
+                }else{
+                    echo "<div class='row'>
+                        <div class='col-sm-12'>
+                        <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-eye' viewBox='0 0 16 16' style='color:#F4E87C'>
+                            <path d='M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z'/>
+                            <path d='M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z'/>
+                        </svg>
+                        <span style='margin-left: 5px;'>¡Tu reserva está en revisión!</span>
+                    </div>
+                 </div>";
+                }
+
+        echo "<div class='row'>
+                        <div class='col-sm-12'>
+                            <a href='detalles.php?id=$alquiler_id' class='$buttonClass' style='margin-top: 10px;'>Ver alquiler</a>
+                        </div>
+                    </div>
+                    <hr>
+                </div>";
+    }
+
+    echo "</div>
+            </div>
+        </div>
+    </div>";
+} else {
+    echo "<p>No se encontraron reservas.</p>";
+}
+?>
+
+
+
+
 </body>
 </html>
 

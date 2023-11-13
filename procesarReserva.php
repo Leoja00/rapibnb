@@ -33,15 +33,22 @@ if (isset($_SESSION['usuario']) && isset($_GET['id'])) {
 
             //NO VERIFICADO
         } else {
-            $sqlReservaExistente = "SELECT COUNT(*) as totalReservas FROM reservas WHERE UsuarioID = '$usuario_id'";
+            $sqlReservaExistente = "SELECT COUNT(*) as totalReservas FROM reservas WHERE UsuarioID = '$usuario_id' AND Estado IN ('En revision', 'Activa')";
             $resultReservaExistente = mysqli_query($conexion, $sqlReservaExistente);
 
             if ($resultReservaExistente) {
                 $rowReservaExistente = mysqli_fetch_assoc($resultReservaExistente);
                 $totalReservas = $rowReservaExistente['totalReservas'];
-                //NO TIENE RESERVAS HECHAS
-                if ($totalReservas == 0) {
-                    $estado="En revision";
+
+                //TIENE RESERVAS ACTIVAS O EN REVISION
+                if ($totalReservas > 0) {
+                    echo '<script>';
+                    echo 'alert("Ya tiene una reserva activa o en revisión. No se permite realizar más reservas.");';
+                    echo 'window.location.href = "detalles.php?id=' . $alquiler_id . '";'; 
+                    echo '</script>';
+                    exit();
+                } else {
+                    $estado = "En revision";
                     $sqlReserva = "INSERT INTO reservas (UsuarioID, AlquilerID, FechaReservaInicio, FechaReservaFin, FechaCreacion, Estado)
                                    VALUES ('$usuario_id', '$alquiler_id', '$fechaDesde', '$fechaHasta', '$fechaCreacion', '$estado')";
                     $resultReserva = mysqli_query($conexion, $sqlReserva);
@@ -54,13 +61,6 @@ if (isset($_SESSION['usuario']) && isset($_GET['id'])) {
                     } else {
                         echo "Error al procesar la reserva: " . mysqli_error($conexion);
                     }
-                    //SI TIENE RESERVAS
-                } else {
-                    echo '<script>';
-                    echo 'alert("Ya tiene una reserva activa. No se permite realizar más reservas.");';
-                    echo 'window.location.href = "detalles.php?id=' . $alquiler_id . '";'; 
-                    echo '</script>';
-                    exit();
                 }
             } else {
                 echo "Error al verificar reservas existentes: " . mysqli_error($conexion);

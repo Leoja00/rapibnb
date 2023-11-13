@@ -1,0 +1,77 @@
+@import url('https://fonts.cdnfonts.com/css/getvoip-grotesque');
+body{
+   background-color: bisque;
+}
+.logo {
+   width: 60px;
+   margin-left: 20%;
+   transition: transform 0.4s;
+}
+.logo:hover{
+   transform: scale(1.1);
+}
+
+
+.box{
+   position: relative;
+}
+.navbar.hidden {
+   top: -70px; /* Esto es lo que hará que el elemento se oculte */
+}
+
+.navbar-edit {
+   padding: 5px;
+   position: fixed;
+   top: 0;
+   z-index: 2;
+   width: 100%;
+   font-weight: 400;
+   font-size: 25px;  
+   transition: top 1.0s ease; 
+ }
+.navbar-edit a {
+   color: rgb(255, 255, 255);
+   transition: 0.8s;
+ }
+ 
+.navbar-edit a:hover {
+     color: #031926;
+   }
+.bg-navbar-top {
+     background: #ED7D6E;
+   }
+   
+.icon-burger {
+     color: white;
+     display: flex;
+     align-items: center;
+   }
+.nav-link{
+   color: #fff;
+   font-size: 20px;
+   margin:0 100px;
+   
+}
+
+
+
+.navbar-nav {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.dropdown-menu {
+   background-color: #FF676D;
+   text-align: left;
+}
+
+.dropdown-item {
+   color: white !important; 
+   
+}
+
+.dropdown-item:hover {
+   background-color: #031926 !important;
+}
+

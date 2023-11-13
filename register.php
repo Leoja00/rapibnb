@@ -78,6 +78,7 @@
 
 
 
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="js/register.js"></script>
 </body>
 </html>

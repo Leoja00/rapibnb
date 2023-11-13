@@ -69,7 +69,7 @@ if ($stmtPublicaciones = mysqli_prepare($conexion, $queryPublicaciones)) {
 
 
     if ($numPublicaciones > 0) {
-        echo "<script>alert('Usted ya tiene publicaciones activas. No puede realizar más publicaciones en este momento.');";
+        echo "<script>alert('Es un usuario regular, ya tiene una publicación.');";
         echo "window.location.href='index.php';</script>";
         exit();
     } else {

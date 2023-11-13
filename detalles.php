@@ -14,7 +14,6 @@ require_once 'config.php';
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-
     <link rel="stylesheet" href="estilo/detalles.css">
     <link rel="stylesheet" href="estilo/navbar.css">
 
@@ -248,23 +247,81 @@ $sql = "SELECT * FROM alquileres WHERE ID = $alquiler_id";
             }
             ?>
 
-            <?php
-            $usuario_actual = $_SESSION['usuario'];
-            $sql_reserva = "SELECT * FROM reservas WHERE UsuarioID = $usuario_actual AND AlquilerID = $alquiler_id";
-            $result_reserva = mysqli_query($conexion, $sql_reserva);
+<?php
+$usuario_actual = $_SESSION['usuario'];
+$sql_reserva = "SELECT * FROM reservas WHERE UsuarioID = $usuario_actual AND AlquilerID = $alquiler_id ORDER BY FechaReservaFin DESC LIMIT 1";
+$result_reserva = mysqli_query($conexion, $sql_reserva);
 
-            if (mysqli_num_rows($result_reserva) > 0) {
-                $reserva_info = mysqli_fetch_assoc($result_reserva);
-                $estado_reserva = $reserva_info['Estado'];
-             if($estado_reserva=="En revision"){
-                echo "<button type='button' class='btn btn-warning' style='margin-left:5%' >¡ALQUILER EN REVISION!</button>";
-             }else{
-                echo "<button type='button' class='btn btn-info' style='margin-left:5%' >¡ALQUILER YA RESERVADO!</button>";}
+if (mysqli_num_rows($result_reserva) > 0) {
+    $reserva_info = mysqli_fetch_assoc($result_reserva);
+    $estado_reserva = $reserva_info['Estado'];
+
+    if ($estado_reserva == "En revision") {
+        echo "<button type='button' class='btn btn-warning' style='margin-left:5%' >¡ALQUILER EN REVISION!</button>";
+    } else {
+        $fecha_reserva_fin = $reserva_info['FechaReservaFin'];
+        $fecha_actual = date('Y-m-d');
+
+        if ($fecha_reserva_fin < $fecha_actual) {?>
+                <button type="button" class="btn btn-primary" style="margin-left: 5%;" data-toggle="modal" data-target="#ofertaModal">RESERVAR</button>
+            <div class="modal fade" id="ofertaModal" tabindex="-1" role="dialog" aria-labelledby="ofertaModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ofertaModalLabel">Detalles de la reserva</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="cantidadPersonas">Cantidad de personas:</label>
+                                    <input type="number" class="form-control" id="cantidadPersonas" name="cantidadPersonas">
+                                </div>
+                                <div class="form-group">
+                                    <label for="fechaDesde">Desde:</label>
+                                    <input type="date" class="form-control" id="fechaDesde" name="fechaDesde" min="<?php echo $fechaInicio; ?>" max="<?php echo $fechaFin; ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="fechaHasta">Hasta:</label>
+                                    <input type="date" class="form-control" id="fechaHasta" name="fechaHasta" min="<?php echo $fechaInicio; ?>" max="<?php echo $fechaFin; ?>">
+                                </div>
+                            <?php
+$sql = "SELECT * FROM alquileres WHERE ID = $alquiler_id";
+                $result = mysqli_query($conexion, $sql);
+                if ($result) {
+                    if (mysqli_num_rows($result) > 0) {
+                        $row = mysqli_fetch_assoc($result);
+                        $minimo = $row['TiempoMinimoPermanencia'];
+                        $maximo = $row['TiempoMaximoPermanencia'];
+                        $costo = $row['CostoAlquilerPorDia'];
+                    }
+                }
+                ?>
+
+                            <button type="button" class="btn btn-primary" onclick="calcularTotal(<?php echo $costo ?>, <?php echo $minimo ?>, <?php echo $maximo ?>, <?php echo $cupo ?>)">Calcular</button>
+                            <span id="total" class="total-estilo align-right"></span>
+                        </div>
+                        <div class="modal-footer">
+                        <form method="post" action="procesarReserva.php?id=<?php echo $alquiler_id; ?>" id="reservaForm">
+                            <input type="hidden" id="formFechaDesde" name="fechaDesde">
+                            <input type="hidden" id="formFechaHasta" name="fechaHasta">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-success" id="btnReservar" style="display:none;">Reservar</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php
+        }else {
+            echo "<button type='button' class='btn btn-info' style='margin-left:5%' >¡ALQUILER YA RESERVADO!</button>";
+        };}
             } else {
 
                 ?>
-
-
             <button type="button" class="btn btn-primary" style="margin-left: 5%;" data-toggle="modal" data-target="#ofertaModal">RESERVAR</button>
             <div class="modal fade" id="ofertaModal" tabindex="-1" role="dialog" aria-labelledby="ofertaModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -323,12 +380,214 @@ $sql = "SELECT * FROM alquileres WHERE ID = $alquiler_id";
         <a href="login.php" class="btn btn-primary" style="margin-left: 5%;">Iniciar sesión para reservar</a>
     <?php endif;?>
 </div>
-<div class="post">
-    <div class="post-body">
-        <h1>RESEÑAS PROXIMAMENTE</h1>
-    </div>
-</div>
 
+<!--RESEÑAS LAS HACE QUIEN REALIZO LA RESERVA Y TERMINO SU FECHA DE RESERVA-->
+<?php
+if (isset($_SESSION['usuario']) && isset($_GET['id'])) {
+    $usuario_id = $_SESSION['usuario'];
+    $alquiler_id = $_GET['id'];
+
+    $sqlVerificarUsuario = "SELECT Verificado FROM usuarios WHERE ID = '$usuario_id'";
+    $resultVerificarUsuario = mysqli_query($conexion, $sqlVerificarUsuario);
+
+    if ($resultVerificarUsuario) {
+        $rowVerificarUsuario = mysqli_fetch_assoc($resultVerificarUsuario);
+        $usuarioVerificado = $rowVerificarUsuario['Verificado'];
+        $sqlVerificarFecha = "SELECT COUNT(*) as total FROM reservas WHERE UsuarioID = '$usuario_id' AND AlquilerID = '$alquiler_id' AND CURDATE() > FechaReservaFin";
+        $resultVerificarFecha = mysqli_query($conexion, $sqlVerificarFecha);
+
+        if ($resultVerificarFecha && $usuarioVerificado == 1) {
+            $rowVerificarFecha = mysqli_fetch_assoc($resultVerificarFecha);
+            $reservasVencidas = $rowVerificarFecha['total'];
+            if ($reservasVencidas > 0) {
+                $sqlObtenerReservaID = "SELECT ID FROM reservas WHERE UsuarioID = '$usuario_id' AND AlquilerID = '$alquiler_id' AND CURDATE() > FechaReservaFin";
+                $resultObtenerReservaID = mysqli_query($conexion, $sqlObtenerReservaID);
+                if ($resultObtenerReservaID) {
+                    $rowObtenerReservaID = mysqli_fetch_assoc($resultObtenerReservaID);
+                    $reserva_id = $rowObtenerReservaID['ID'];
+                    $sqlVerificarResena = "SELECT COUNT(*) as total FROM reseñas WHERE UsuarioID = '$usuario_id' AND AlquilerID = '$alquiler_id'";
+                    $resultVerificarResena = mysqli_query($conexion, $sqlVerificarResena);
+                    if ($resultVerificarResena) {
+                        $rowVerificarResena = mysqli_fetch_assoc($resultVerificarResena);
+                        $reseñasExisten = $rowVerificarResena['total'];
+                        if ($reseñasExisten > 0) {
+                            
+                        } else {
+                            // ESTO SINO HA HECHO YA UNA RESEÑA
+                            $sqlUserInfo = "SELECT Nombre, Apellido, Avatar FROM usuarios WHERE ID = '$usuario_id'";
+                            $resultUserInfo = mysqli_query($conexion, $sqlUserInfo);
+
+                            if ($resultUserInfo) {
+                                $rowUserInfo = mysqli_fetch_assoc($resultUserInfo);
+                                $nombreUsuario = $rowUserInfo['Nombre'];
+                                $apellidoUsuario = $rowUserInfo['Apellido'];
+                                echo '<div class="post">';
+                                echo '<div class="post-body">';
+                                echo '<h3><u>Escriba su reseña</u></h3>';
+                                echo '<form action="procesarResenia.php" method="post">';
+                                echo '<p>Nombre: ' . $nombreUsuario . ' ' . $apellidoUsuario . '</p>';
+                                echo '<div style="display: flex;">';
+                                echo '<textarea name="resena" id="resena" placeholder="Escriba tu reseña aquí" style="flex: 1;"></textarea>';
+                                echo '</div>';
+                                echo '<input type="hidden" name="usuario_id" value="'.$usuario_id.'">';
+                                echo '<input type="hidden" name="alquiler_id" value="'.$alquiler_id.'">';
+                                echo '<input type="hidden" name="reserva_id" value="'.$reserva_id.'">';
+                                echo '<input type="hidden" name="puntuacion" id="puntuacion" value="0">'; 
+                                ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                <?php
+                                echo '<button type="button" onclick="borrarResena()" class="btn btn-danger" style="margin-top: 1%;">Borrar Reseña</button>';
+                                echo '<button type="submit" class="btn btn-primary" style="margin-top: 1%; margin-left: 10px;">Guardar Reseña</button>';
+                                echo '</form>';
+                                echo '</div>';
+                                echo '</div>';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+?>
+
+<!--ESTRELLAS-->
+<script>
+    var estrellas = document.querySelectorAll(".bi-star-fill");
+    estrellas.forEach(function(estrella, index) {
+        estrella.addEventListener("click", function() {
+            document.getElementById("puntuacion").value = index + 1;
+            actualizarEstrellas(index + 1);
+        });
+    });
+
+    function actualizarEstrellas(puntuacion) {
+        estrellas.forEach(function(estrella, index) {
+            if (index < puntuacion) {
+                estrella.classList.add("text-warning");
+            } else {
+                estrella.classList.remove("text-warning");
+            }
+        });
+    }
+</script>
+
+<?php
+function mostrarEstrellas($puntaje) {
+    $estrellas = '';
+    for ($i = 1; $i <= 5; $i++) {
+        if ($i <= $puntaje) {
+            $estrellas .= '<span style="color: #ffd700;">★</span>'; 
+        } else {
+            $estrellas .= '<span style="color: #d3d3d3;">★</span>'; 
+        }
+    }
+    return $estrellas;
+}
+
+$reseniasTodo = "SELECT reseñas.ID, reseñas.Comentario, reseñas.Puntaje, usuarios.Nombre, usuarios.Apellido, usuarios.Avatar, reseñas.RespuestaDueño FROM reseñas JOIN usuarios ON reseñas.UsuarioID = usuarios.ID WHERE reseñas.AlquilerID = $alquiler_id";
+$resultResenias = mysqli_query($conexion, $reseniasTodo);
+
+if ($resultResenias->num_rows > 0) {
+    ?>
+    <div class="post">
+        <h2 style="margin-left:1%"><u>Reseñas</u></h2>
+        <?php
+        while ($row = $resultResenias->fetch_assoc()) {
+            ?>
+            <div class="post-body">
+                <div style="background: #bdf0fa; padding: 15px; border: 2px solid #abecf9; border-radius: 6px;">
+                    <img src="<?php echo '' . $row["Avatar"]; ?>" alt="avatar" style="width: 70px; float: left; margin-right: 10px;">
+                    <p style="color: #0c92ac; font-weight: bold;">
+                        <u><strong><?php echo $row["Nombre"] . " " . $row["Apellido"]; ?></u></strong> dice:
+                    </p>
+                    <div style="margin-left: 80px;">
+                        <?php echo $row["Comentario"]; ?>
+                        <br>
+                        <?php echo mostrarEstrellas($row["Puntaje"]); ?>
+
+                        <!-- RESPUESTA DEL DUEÑO -->
+                        <?php
+                        $respuestaDueño = $row["RespuestaDueño"];
+                        if (!empty($respuestaDueño)) {
+                            ?>
+                            <div style="background: #e2fdf4;  padding: 15px; border: 2px solid #bdfae6; border-radius: 6px;">
+                                <p style="color: #0ebd84; font-weight: bold;">
+                                    <u><strong><?php echo 'Respuesta del dueño:' ?></u></strong>
+                                </p>
+                                <div>
+                                    <?php echo $respuestaDueño; ?>
+                                    <br>
+                                </div>
+                            </div>
+                        <?php }
+                        ?>
+
+                        <!-- FORMULARIO DE RESPUESTA DEL DUEÑO -->
+                        <?php
+                        if (isset($_SESSION['usuario']) && isset($_GET['id'])) {
+                            $usuario_id = $_SESSION['usuario'];
+                            $alquiler_id = $_GET['id'];
+                            $reseña_id = $row["ID"];
+
+                            $sqlVerificarDueño = "SELECT COUNT(*) as total FROM alquileres WHERE ID = '$alquiler_id' AND UsuarioID = '$usuario_id'";
+                            $resultVerificarDueño = mysqli_query($conexion, $sqlVerificarDueño);
+
+                            if ($resultVerificarDueño) {
+                                $rowVerificarDueño = mysqli_fetch_assoc($resultVerificarDueño);
+                                $esDueño = $rowVerificarDueño['total'];
+
+                                if ($esDueño > 0 && empty($respuestaDueño)) {
+                                    echo '<form action="procesarRespuestaDueño.php" method="post">';
+                                    echo '<br>';
+                                    echo '<div style="display: flex;">';
+                                    echo '<br>';
+                                    echo '<textarea name="respuesta" id="respuesta" placeholder="Escriba su respuesta acá" style="flex: 1;"></textarea>';
+                                    echo '<input type="hidden" name="alquiler_id" value="' . $alquiler_id . '">';
+                                    echo '<input type="hidden" name="reseña_id" value="' . $reseña_id . '">';
+                                    echo '</div>';
+                                    echo '<button type="button" onclick="borrarRespuesta()" class="btn btn-danger" style="margin-top: 1%;">Borrar respuesta</button>';
+                                    echo '<button type="submit" class="btn btn-primary" style="margin-top: 1%; margin-left: 10px;">Guardar respuesta</button>';
+                                    echo '</form>';
+                                }
+                            }
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        <?php
+        }
+        ?>
+    </div>
+<?php
+}
+?>
+
+
+
+<script>
+    function borrarResena() {
+        document.getElementById('resena').value = '';
+    }
+    function borrarRespuesta(){
+        document.getElementById('respuesta').value='';
+    }
+</script>
             <?php
 } else {
             echo "No se encontraron detalles para el alquiler elegido.";

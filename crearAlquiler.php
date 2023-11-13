@@ -51,7 +51,7 @@
         
 
         <div class="input-field">
-            <input type="number" name="costo_por_dia" min="1000" max="100000" required>
+            <input type="number" name="costo_por_dia" required>
             <label>Costo diario</label>
         </div>
 
@@ -61,12 +61,12 @@
         </div>
 
         <div class="input-field">
-            <input type="number" name="tiempo_maximo" required>
+            <input type="number" name="tiempo_maximo"required>
             <label>Duración máxima (días)</label>
         </div>
 
         <div class="input-field">
-            <input type="number" name="cupos" min="1" max="20" required>
+            <input type="number" name="cupos" min="1"  required>
             <label>Cupo de personas</label>
         </div>
 
@@ -114,7 +114,7 @@
 </script>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="js/alquiler.js"></script>
 
 </body>
 </html>

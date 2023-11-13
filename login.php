@@ -43,7 +43,6 @@
           <input type="checkbox" id="remember">
           <p>Recordarme</p>
         </label>
-        <a href="#">Olvidé contraseña</a>
       </div>
       <button type="submit">Continuar</button>
       <div class="register">
@@ -55,6 +54,7 @@
     </form>
 </div>
 
-  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="js/login.js"></script>
 </body>
 </html>

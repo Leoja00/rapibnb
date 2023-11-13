@@ -13,7 +13,7 @@ $resultadoAceptar = mysqli_query($conexion, $aceptar);
 
 if ($resultadoAceptar) {
     echo '<script>';
-    echo 'alert("Reserva aceptada correctamente.\n¡Disfrute de la estadía!");';
+    echo 'alert("Reserva aceptada correctamente.");';
     echo 'window.location.href = "detalles.php?id=' . $alquiler_id . '";'; 
     echo '</script>';
     exit();
