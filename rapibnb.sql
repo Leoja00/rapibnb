@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-11-2023 a las 23:18:37
+-- Tiempo de generación: 13-11-2023 a las 23:32:58
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -158,7 +158,7 @@ INSERT INTO `usuarios` (`ID`, `Nombre`, `Apellido`, `DNI`, `CorreoElectronico`, 
 (17, 'Mirta', 'Miranda', '3100123456', 'mirta@gmail.com', '2664112255', 'Paisaje', 'imgUser/Sin título-1.jpg', 0, NULL, 'Alumno', 0, '$2y$10$P1NEnsByVvrHpZ0usA94nOHXbr0fQxoF6ZVQzxBSWIiqp6vPuExZe', NULL, NULL, NULL),
 (18, 'María ', 'Mamondez', '43216209', 'Mdcmamondez@outlook.com', '2994544158', 'Playa', 'imgUser/20230930_191440_469.jpg', 0, NULL, '.', 0, '$2y$10$xI2mehKO5dHBWntK1I5gXOqMSPSgF2y717Lva2/rvGQVT...URCNm', 'Verificame plis🤙', 'archivosVerificar/FB_IMG_1696695148608.jpg', NULL),
 (19, 'Facundo', 'Cabeza', '38456744', 'facundoCab@gmail.com', '2664245487', 'Vino Mendoza', 'imgUser/prueba.png', 0, NULL, 'Estudiante de Geologia', 0, '$2y$10$TPwgTHWOGjyDxo1p27PjXufeomuaHMUjYSur5p0T5VDPzdIpotnua', NULL, NULL, NULL),
-(20, 'Usuario', 'Prueba', '12345678', 'prueba@gmail.com', '2664001122', 'Programacion', 'imgUser/Sin título-1.jpg', 1, '2023-11-13', 'prueba', 0, '$2y$10$MHPXPiXtmx4hyi1.XorwyeNUlTzOdS47osjukdKr8P98.O3PaRqtK', 'verifiacion', 'archivosVerificar/Sin título-1.jpg', '2027-12-14');
+(20, 'Usuario', 'Prueba', '12345678', 'prueba@gmail.com', '2664001122', 'Programacion', 'imgUser/Sin título-1.jpg', 1, '2023-11-13', 'prueba', 1, '$2y$10$MHPXPiXtmx4hyi1.XorwyeNUlTzOdS47osjukdKr8P98.O3PaRqtK', 'verifiacion', 'archivosVerificar/Sin título-1.jpg', '2027-12-14');
 
 --
 -- Índices para tablas volcadas
