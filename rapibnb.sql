@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-11-2023 a las 22:17:55
+-- Tiempo de generación: 13-11-2023 a las 23:18:37
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -88,7 +88,8 @@ INSERT INTO `reservas` (`ID`, `UsuarioID`, `AlquilerID`, `FechaReservaInicio`, `
 (54, 17, 24, '2023-11-14', '2023-11-15', '2023-11-13 19:04:34', 'En revision'),
 (58, 3, 24, '2023-10-13', '2023-10-14', '2023-10-13 19:11:05', 'Reservado'),
 (59, 1, 25, '2023-10-13', '2023-10-30', '2023-10-13 19:13:37', 'Reservado'),
-(60, 8, 24, '2023-10-16', '2023-10-20', '2023-10-13 19:29:22', 'Reservado');
+(60, 8, 24, '2023-10-16', '2023-10-20', '2023-10-13 19:29:22', 'Reservado'),
+(61, 1, 29, '2023-10-13', '2023-10-14', '2023-10-13 22:48:59', 'Reservado');
 
 -- --------------------------------------------------------
 
@@ -115,7 +116,8 @@ INSERT INTO `reseñas` (`ID`, `Comentario`, `Puntaje`, `AlquilerID`, `UsuarioID`
 (21, 'MUY BUEN HOTEL, MUY RECOMENDABLE', 5, 24, 7, 49, 'Muchas gracias, esperamos tu visita nuevamente!'),
 (22, 'Excelente vista al mar, lo super recomiendo, cumplieron con todo lo establecido', 4, 25, 1, 59, ''),
 (26, 'Beautiful landscape, and place, will visit us soon', 4, 24, 8, 60, 'TENKIU'),
-(27, 'No me gusta el servicio', 2, 24, 3, 58, '');
+(27, 'No me gusta el servicio', 2, 24, 3, 58, ''),
+(28, 'linda', 4, 29, 1, 61, '.....gracias');
 
 -- --------------------------------------------------------
 
@@ -155,7 +157,8 @@ INSERT INTO `usuarios` (`ID`, `Nombre`, `Apellido`, `DNI`, `CorreoElectronico`, 
 (8, 'Danilo', 'Talquenca', '39741852', 'danilotalquenca26@gmail.com', '2664457816', 'FERNET, CERVEZA Y VINO', 'imgUser/3.1.jpg', 1, '2023-11-13', 'Estudiante del alcohol y joda', 0, '$2y$10$JETNtqnxAhWq8gaXxCnxn.6Ve6jwm7kOnmbueL6WfrLxdxv.I7Hxq', 'VERIFICAME GATO', 'archivosVerificar/79278320.jpg', '2023-11-18'),
 (17, 'Mirta', 'Miranda', '3100123456', 'mirta@gmail.com', '2664112255', 'Paisaje', 'imgUser/Sin título-1.jpg', 0, NULL, 'Alumno', 0, '$2y$10$P1NEnsByVvrHpZ0usA94nOHXbr0fQxoF6ZVQzxBSWIiqp6vPuExZe', NULL, NULL, NULL),
 (18, 'María ', 'Mamondez', '43216209', 'Mdcmamondez@outlook.com', '2994544158', 'Playa', 'imgUser/20230930_191440_469.jpg', 0, NULL, '.', 0, '$2y$10$xI2mehKO5dHBWntK1I5gXOqMSPSgF2y717Lva2/rvGQVT...URCNm', 'Verificame plis🤙', 'archivosVerificar/FB_IMG_1696695148608.jpg', NULL),
-(19, 'Facundo', 'Cabeza', '38456744', 'facundoCab@gmail.com', '2664245487', 'Vino Mendoza', 'imgUser/prueba.png', 0, NULL, 'Estudiante de Geologia', 0, '$2y$10$TPwgTHWOGjyDxo1p27PjXufeomuaHMUjYSur5p0T5VDPzdIpotnua', NULL, NULL, NULL);
+(19, 'Facundo', 'Cabeza', '38456744', 'facundoCab@gmail.com', '2664245487', 'Vino Mendoza', 'imgUser/prueba.png', 0, NULL, 'Estudiante de Geologia', 0, '$2y$10$TPwgTHWOGjyDxo1p27PjXufeomuaHMUjYSur5p0T5VDPzdIpotnua', NULL, NULL, NULL),
+(20, 'Usuario', 'Prueba', '12345678', 'prueba@gmail.com', '2664001122', 'Programacion', 'imgUser/Sin título-1.jpg', 1, '2023-11-13', 'prueba', 0, '$2y$10$MHPXPiXtmx4hyi1.XorwyeNUlTzOdS47osjukdKr8P98.O3PaRqtK', 'verifiacion', 'archivosVerificar/Sin título-1.jpg', '2027-12-14');
 
 --
 -- Índices para tablas volcadas
@@ -207,19 +210,19 @@ ALTER TABLE `alquileres`
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT de la tabla `reseñas`
 --
 ALTER TABLE `reseñas`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Restricciones para tablas volcadas
