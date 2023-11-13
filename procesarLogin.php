@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     $correo = $_POST["correo"];
     $contraseña = $_POST["contrasenia"];
     $sql = "SELECT id, contraseña FROM usuarios WHERE correoElectronico = ?";
@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     header("Location: login.php?error=1");
     exit();
-}
+
 
 mysqli_close($conexion);
 ?>

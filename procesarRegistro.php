@@ -2,7 +2,6 @@
 
 require_once 'config.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {//CAMBIAR
     
     $nombre = $_POST["nombre"];
     $apellido = $_POST["apellido"];
@@ -35,5 +34,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {//CAMBIAR
         
             mysqli_stmt_close($stmt);
             mysqli_close($conexion);
-        }}}
+        }}
         ?>
